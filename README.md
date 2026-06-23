@@ -43,6 +43,10 @@ PNG image of the generated QR code.
 #### Response Body
 JSON object containing the decoded data.
 
+#### Error Response
+
+
+
 ## Requirement Legend
 - M: Mandatory
 - C: Conditional (Required depending on other fields)

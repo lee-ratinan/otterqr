@@ -263,10 +263,17 @@ class Home extends BaseController
     {
         $countryCode = $this->request->getPost('countryCode');
         $countryCode = strtoupper($countryCode);
-        if (self::COUNTRY_CODE_TH == $countryCode) {
-            return $this->generatePromptPayQr();
+        try {
+            if (self::COUNTRY_CODE_TH == $countryCode) {
+                return $this->generatePromptPayQr();
+            }
+            throw new Exception('Country code not supported');
+        } catch (Exception $e) {
+            log_message('error', 'ERROR:' . $e->getMessage());
+            return $this->response
+                ->setStatusCode(HTTP_STATUS_ERROR)
+                ->setJSON(['error' => $e->getMessage()]);
         }
-        throw new Exception('Country code not supported');
     }
 
     // READER ////////////////////////////////////////////////////////////////
@@ -317,7 +324,9 @@ class Home extends BaseController
             return $this->response->setJSON($contents);
         } catch (Exception $e) {
             log_message('error', 'ERROR:' . $e->getMessage());
-            return $this->response->setJSON(['error' => $e->getMessage()]);
+            return $this->response
+                ->setStatusCode(HTTP_STATUS_ERROR)
+                ->setJSON(['error' => $e->getMessage()]);
         }
     }
 }
