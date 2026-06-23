@@ -12,7 +12,11 @@ $filePath = $readmePath ?? ROOTPATH . 'README.md';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentation - README</title>
+    <title>OtterQR - README</title>
+    <!-- Favicons -->
+    <link href="https://otternova.com/assets/img/favicon.webp" rel="icon">
+    <link href="https://otternova.com/assets/img/apple-touch-icon.webp" rel="apple-touch-icon">
+    <!-- CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.1/github-markdown.min.css">
     <style>
         body {
