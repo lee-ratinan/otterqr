@@ -26,8 +26,17 @@ $filePath = $readmePath ?? ROOTPATH . 'README.md';
             margin: 0 auto;
             padding: 45px;
         }
-        @media (max-width: 767px) {
-            .body { padding: 15px; }
+        table {
+            width: 100%;
+        }
+        @media screen and (max-width: 767px) {
+            .body { padding: 8px; }
+            table {
+                display: block;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            }
         }
     </style>
 </head>
