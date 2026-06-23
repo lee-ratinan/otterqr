@@ -50,6 +50,8 @@ class Home extends BaseController
     const AID_MERCHANT_BILL_DOMESTIC = 'A000000677010112';
     // CURRENCY CODE
     const CURRENCY_CODE_THB = '764';
+    // COLORS
+    private array $promptpayColor = [0, 58, 109];
 
     public function index(): string
     {
@@ -65,11 +67,10 @@ class Home extends BaseController
      * Generate QR Code
      * @param string $qrData
      * @param string $countryCode
-     * @param string $merchantName
      * @param array $color
      * @return ResponseInterface
      */
-    private function generateQrCode(string $qrData, string $countryCode = '', string $merchantName = '', array $color = []): ResponseInterface
+    private function generateQrCode(string $qrData, string $countryCode = '', array $color = []): ResponseInterface
     {
         $writer = new PngWriter();
         if (empty($color)) {
@@ -86,11 +87,6 @@ class Home extends BaseController
             foregroundColor: new Color($color[0], $color[1], $color[2]),
             backgroundColor: new Color(255, 255, 255)
         );
-        // Create generic label
-        $label = new Label(
-            text: (empty($merchantName) ? 'SCAN TO PAY' : $merchantName),
-            textColor: new Color($color[0], $color[1], $color[2])
-        );
         // Create generic logo
         $logo     = null;
         $fileDirs = [
@@ -104,7 +100,7 @@ class Home extends BaseController
                 punchoutBackground: true
             );
         }
-        $result = $writer->write($qrCode, $logo, $label);
+        $result = $writer->write($qrCode, $logo);
         $png    = $result->getString();
         return $this->response
             ->setHeader('Content-Type', 'image/png')
@@ -256,7 +252,7 @@ class Home extends BaseController
         // CRC
         $qrString = $this->appendEmvcoCrc($qrString);
         log_message('info', 'GENERATOR:TH:' . $qrString);
-        return $this->generateQrCode($qrString, self::COUNTRY_CODE_TH, $merchantName, [0,58,109]);
+        return $this->generateQrCode($qrString, self::COUNTRY_CODE_TH, $this->promptpayColor);
     }
 
     /**
