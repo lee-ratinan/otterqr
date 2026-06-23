@@ -53,7 +53,10 @@ class Home extends BaseController
 
     public function index(): string
     {
-        return 'EMVCO QR CODE GENERATOR';
+        $data = [
+            'readmePath' => ROOTPATH . 'README.md'
+        ];
+        return view('readme', $data);
     }
 
     // GENERATOR ////////////////////////////////////////////////////////////////
@@ -189,6 +192,9 @@ class Home extends BaseController
             $qrString   .= $this->formatTag(self::TAG_PROMPTPAY_ID, $subtagStr);
         } else {
             // BILL PAYMENT
+            if (self::POI_STATIC == $pointOfInit) {
+                throw new Exception('Bill payment not supported for static point of initiation');
+            }
             $billerId = $this->request->getGetPost('billerId');
             if (!preg_match('/^\d{15}$/', $billerId)) {
                 // Biller ID = Tax ID + suffix, which is 15 digits
