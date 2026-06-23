@@ -41,11 +41,43 @@ PNG image of the generated QR code.
 | `qrString` | string    | -      | M    | The QR code string to be decoded. |
 
 #### Response Body
-JSON object containing the decoded data.
+JSON object containing the decoded data. The structure is dynamic based on the QR code raw information.
 
-#### Error Response
+### Error Response
 
+When there is an error in the request, the API will return a `500` HTTP Status along with a JSON object.
 
+#### Error Response Object
+| Key     | Data Type | Description                     |
+|---------|-----------|---------------------------------|
+| `error` | string    | A human-readable error message. |
+
+### List of Error Messages
+
+#### Generator
+
+| Error Message                                               | Description                                                                                    |
+|-------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| `Country code not supported`                                | The country code must be `TH`.                                                                 |
+| `Point of initiation not supported`                         | The point of initiation must be `DYNAMIC` or `STATIC`                                          |
+| `Merchant account information not supported`                | Merchant account information must be `BILL_PAYMENT` or `PROMPTPAY_ID`                          |
+| `Bill payment not supported for static point of initiation` | When merchant account information is `BILL_PAYMENT`, the point of initiation must be `DYNAMIC` |
+| `Invalid biller ID`                                         | Biller ID must match this REGEX `/^\d{15}$/`                                                   |
+| `Invalid reference 1`                                       | Reference number 1 must match this REGEX `/[A-Za-z0-9]{1,20}/`                                 |
+| `Invalid reference 2`                                       | If used, reference number 2 must match this REGEX `/[A-Za-z0-9]{1,20}/`                        |
+| `Invalid phone number`                                      | Phone number must match this REGEX `/^66\d{9}$/`                                               |
+| `Invalid transaction amount`                                | Transaction amount must match this REGEX `/^\d+(\.\d{2})?$/`                                   |
+| `Transaction amount too long`                               | Transaction amount must be 13-character long or less                                           |
+| `Invalid merchant name`                                     | Merchant name must match this REGEX `/^[A-Za-z0-9]{1,25}$/`                                    |
+| `Invalid merchant city`                                     | Merchant city must match this REGEX `/^[A-Za-z0-9]{1,15}$/`                                    |
+| `Invalid postal code`                                       | Postal code must match this REGEX `/^\d{5}$/`                                                  |
+
+#### Reader
+
+| Error Message     | Description                                     |
+|-------------------|-------------------------------------------------|
+| `Invalid CRC`     | CRC code is invalid.                            |
+| `Invalid QR Code` | The QR code is invalid due to tag ID or length. |
 
 ## Requirement Legend
 - M: Mandatory

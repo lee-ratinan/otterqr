@@ -114,10 +114,11 @@ class Home extends BaseController
 
     /**
      * Generates the EMVCo Tag 63 CRC16 value and appends it to the payload.
-     * * @param string $payload The initial EMVCo string (without Tag 63).
+     * @param string $payload The initial EMVCo string (without Tag 63).
+     * @param bool $returnOnlyCrc If true, only the CRC value is returned.
      * @return string The final payload with "6304" and the 4-digit hex checksum.
      */
-    function appendEmvcoCrc(string $payload): string
+    function appendEmvcoCrc(string $payload, bool $returnOnlyCrc = false): string
     {
         // 1. Append the CRC Tag ID (63) and Length (04) to the string before calculating
         $strToCalculate = $payload . self::TAG_CRC . "04";
@@ -141,6 +142,9 @@ class Home extends BaseController
         }
         // 4. Format to uppercase, 4-digit hex string padded with zeros
         $crcHex = sprintf('%04X', $crc);
+        if ($returnOnlyCrc) {
+            return $crcHex;
+        }
         return $strToCalculate . $crcHex;
     }
 
@@ -169,7 +173,7 @@ class Home extends BaseController
         $pointOfInit = $this->request->getPost('pointOfInitiation');
         $pointOfInit = strtoupper($pointOfInit);
         if (!in_array($pointOfInit, [self::POI_STATIC, self::POI_DYNAMIC])) {
-            throw new Exception('Point of Initiation not supported');
+            throw new Exception('Point of initiation not supported');
         }
         $pointOfInitValue = ($pointOfInit == self::POI_STATIC ? self::POI_STATIC_VAL : self::POI_DYNAMIC_VAL);
         $qrString .= $this->formatTag(self::TAG_POI, $pointOfInitValue);
@@ -198,7 +202,7 @@ class Home extends BaseController
             $billerId = $this->request->getPost('billerId');
             if (!preg_match('/^\d{15}$/', $billerId)) {
                 // Biller ID = Tax ID + suffix, which is 15 digits
-                throw new Exception('Invalid tax ID');
+                throw new Exception('Invalid biller ID');
             }
             $subtagStr  = $this->formatTag(self::SUBTAG_PROMPTPAY_AID, self::AID_MERCHANT_BILL_DOMESTIC);
             $subtagStr .= $this->formatTag(self::SUBTAG_PROMPTPAY_BILLER_ID, $billerId);
@@ -288,6 +292,14 @@ class Home extends BaseController
         log_message('error', 'READER:' . $qrString);
         $contents = [];
         try {
+            // VALIDATE QR STRING
+            $qrContent = substr($qrString, 0, -8);
+            $crcValue  = substr($qrString, -4);
+            $chkCrc    = $this->appendEmvcoCrc($qrContent, true);
+            if ($chkCrc != $crcValue) {
+                throw new Exception('Invalid CRC');
+            }
+            // DECODE QR STRING
             while (!empty($qrString)) {
                 $tagId = intval(substr($qrString, 0, 2));
                 $length = intval(substr($qrString, 2, 2));
