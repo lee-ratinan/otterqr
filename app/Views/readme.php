@@ -30,7 +30,7 @@ $filePath = $readmePath ?? ROOTPATH . 'README.md';
             width: 100%;
         }
         @media screen and (max-width: 767px) {
-            .body { padding: 8px; }
+            body { padding: 8px; }
             table {
                 display: block;
                 width: 100%;
