@@ -6,6 +6,8 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\Label\Label;
+use Endroid\QrCode\Logo\Logo;
 use Endroid\QrCode\RoundBlockSizeMode;
 use Exception;
 use Endroid\QrCode\QrCode;
@@ -55,14 +57,21 @@ class Home extends BaseController
     }
 
     // GENERATOR ////////////////////////////////////////////////////////////////
+
     /**
      * Generate QR Code
      * @param string $qrData
+     * @param string $countryCode
+     * @param string $merchantName
+     * @param array $color
      * @return ResponseInterface
      */
-    private function generateQrCode(string $qrData): ResponseInterface
+    private function generateQrCode(string $qrData, string $countryCode = '', string $merchantName = '', array $color = []): ResponseInterface
     {
         $writer = new PngWriter();
+        if (empty($color)) {
+            $color = [0, 0, 0];
+        }
         // Create QR code
         $qrCode = new QrCode(
             data: $qrData,
@@ -71,10 +80,28 @@ class Home extends BaseController
             size: 300,
             margin: 10,
             roundBlockSizeMode: RoundBlockSizeMode::Margin,
-            foregroundColor: new Color(0, 0, 0),
+            foregroundColor: new Color($color[0], $color[1], $color[2]),
             backgroundColor: new Color(255, 255, 255)
         );
-        $result = $writer->write($qrCode);
+        // Create generic label
+        $label = new Label(
+            text: (empty($merchantName) ? 'SCAN TO PAY' : $merchantName),
+            textColor: new Color($color[0], $color[1], $color[2])
+        );
+        // Create generic logo
+        $logo     = null;
+        $fileDirs = [
+            'TH' => dirname(__DIR__, 2) . '/public/PromptPay.png'
+        ];
+        if (!empty($countryCode) && isset($fileDirs[$countryCode])) {
+            $filePath = $fileDirs[$countryCode];
+            $logo = new Logo(
+                path: $filePath,
+                resizeToWidth: 80,
+                punchoutBackground: true
+            );
+        }
+        $result = $writer->write($qrCode, $logo, $label);
         $png    = $result->getString();
         return $this->response
             ->setHeader('Content-Type', 'image/png')
@@ -219,7 +246,7 @@ class Home extends BaseController
         // CRC
         $qrString = $this->appendEmvcoCrc($qrString);
         log_message('info', 'GENERATOR:TH:' . $qrString);
-        return $this->generateQrCode($qrString);
+        return $this->generateQrCode($qrString, self::COUNTRY_CODE_TH, $merchantName, [0,58,109]);
     }
 
     /**
