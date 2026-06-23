@@ -273,33 +273,51 @@ class Home extends BaseController
 
     /**
      * Read QR Code String
-     * @return string
+     * @return ResponseInterface
      */
-    public function reader(): string
+    public function reader(): ResponseInterface
     {
         $qrString = $this->request->getGetPost('qrString');
+        log_message('error', 'READER:' . $qrString);
         $contents = [];
-        while (!empty($qrString)) {
-            $tagId  = intval(substr($qrString, 0, 2));
-            $length = intval(substr($qrString, 2, 2));
-            $value  = substr($qrString, 4, $length);
-            if (in_array($tagId, [29, 30])) {
-                $subString = $value;
-                $subContents = [];
-                while (!empty($subString)) {
-                    $subTagId  = intval(substr($subString, 0, 2));
-                    $subLength = intval(substr($subString, 2, 2));
-                    $subValue  = substr($subString, 4, $subLength);
-                    $subContents[$subTagId] = $subValue;
-                    $subString = substr($subString, 4 + $subLength);
+        try {
+            while (!empty($qrString)) {
+                $tagId = intval(substr($qrString, 0, 2));
+                $length = intval(substr($qrString, 2, 2));
+                if ($length <= 0 || $length > 99 || $tagId < 0) {
+                    throw new Exception('Invalid QR Code');
                 }
-                $contents[$tagId] = $subContents;
-            } else {
-                $contents[$tagId] = $value;
+                $value = substr($qrString, 4, $length);
+                if (strlen($value) != $length) {
+                    throw new Exception('Invalid QR Code');
+                }
+                if (in_array($tagId, [29, 30])) {
+                    $subString = $value;
+                    $subContents = [];
+                    while (!empty($subString)) {
+                        $subTagId = intval(substr($subString, 0, 2));
+                        $subLength = intval(substr($subString, 2, 2));
+                        if ($subLength <= 0 || $subLength > 99 || $subTagId < 0) {
+                            throw new Exception('Invalid QR Code');
+                        }
+                        $subValue = substr($subString, 4, $subLength);
+                        if (strlen($subValue) != $subLength) {
+                            throw new Exception('Invalid QR Code');
+                        }
+                        $subContents[$subTagId] = $subValue;
+                        $subString = substr($subString, 4 + $subLength);
+                    }
+                    $contents[$tagId] = $subContents;
+                } else {
+                    $contents[$tagId] = $value;
+                }
+                $qrString = substr($qrString, 4 + $length);
             }
-            $qrString = substr($qrString, 4 + $length);
+            log_message('info', 'READER:' . json_encode($contents));
+            return $this->response->setJSON($contents);
+        } catch (Exception $e) {
+            log_message('error', 'ERROR:' . $e->getMessage());
+            return $this->response->setJSON(['error' => $e->getMessage()]);
         }
-        log_message('info', 'READER:' . json_encode($contents));
-        return json_encode($contents);
     }
 }
