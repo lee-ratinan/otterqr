@@ -25,28 +25,42 @@
 
 ## 2. Requirements by Standards
 
-| Tag ID | Thailand’s Promptpay ID                           | Thailand’s Bill Payment Mode                        | Singapore’s PayNow |
-|:------:|---------------------------------------------------|-----------------------------------------------------|--------------------|
-|  `00`  | `01`                                              | `01`                                                |                    |
-|  `01`  | Either `11` or `12`                               | Only `12` as it is used for individual bill payment |                    |
-|  `29`  | **Required**                                      | -                                                   |                    |
-|        | `00` Application ID: `A000000677010111`           |                                                     |                    |
-|        | `01` Promptpay ID (mobile phone): `0066#########` |                                                     |                    |
-|        | `02` Promptpay ID (tax ID, personal ID): `N(13)`  |                                                     |                    |
-|  `30`  | -                                                 | **Required**                                        |                    |
-|        |                                                   | `00` Application ID: `A000000677010112`             |                    |
-|        |                                                   | `01` Biller ID (tax ID+suffix): `N(15)`             |                    |
-|        |                                                   | `02` Reference number 1: `ans(30)`                  |                    |
-|        |                                                   | `03` Reference number 2: `ans(30)`                  |                    |
-|  `52`  | -                                                 | -                                                   |                    |
-|  `53`  | `764`                                             | `764`                                               |                    |
-|  `54`  | Required if `01` is `12`                          | **Required**                                        |                    |
-|  `55`  | -                                                 | -                                                   |                    |
-|  `56`  | -                                                 | -                                                   |                    |
-|  `57`  | -                                                 | -                                                   |                    |
-|  `58`  | `TH`                                              | `TH`                                                |                    |
-|  `59`  | -                                                 | *Optional*                                          |                    |
-|  `60`  | -                                                 | -                                                   |                    |
-|  `61`  | -                                                 | -                                                   |                    |
-|  `62`  | -                                                 | -                                                   |                    |
-|  `63`  | **Required**                                      | **Required**                                        |                    |
+| Tag ID | Thailand’s Promptpay ID                           | Thailand’s Bill Payment Mode                        | Singapore’s PayNow                     |
+|:------:|---------------------------------------------------|-----------------------------------------------------|----------------------------------------|
+|  `00`  | `01`                                              | `01`                                                | `01`                                   |
+|  `01`  | Either `11` or `12`                               | Only `12` as it is used for individual bill payment | Either `11` or `12`                    |
+|  `26`  | -                                                 | -                                                   | **Required**                           |
+|        | -                                                 | -                                                   | `00` Application ID: `SG.PAYNOW`       |
+|        | -                                                 | -                                                   | `01` ? Length = 1                      |
+|        | -                                                 | -                                                   | `02` UEN or ID                         |
+|        | -                                                 | -                                                   | `03` ? Length = 1                      |
+|  `29`  | **Required**                                      | -                                                   | -                                      |
+|        | `00` Application ID: `A000000677010111`           |                                                     |                                        |
+|        | `01` Promptpay ID (mobile phone): `0066#########` |                                                     |                                        |
+|        | `02` Promptpay ID (tax ID, personal ID): `N(13)`  |                                                     |                                        |
+|  `30`  | -                                                 | **Required**                                        | -                                      |
+|        |                                                   | `00` Application ID: `A000000677010112`             |                                        |
+|        |                                                   | `01` Biller ID (tax ID+suffix): `N(15)`             |                                        |
+|        |                                                   | `02` Reference number 1: `ans(30)`                  |                                        |
+|        |                                                   | `03` Reference number 2: `ans(30)`                  |                                        |
+|  `51`  | -                                                 | -                                                   | **Required**                           |
+|        | -                                                 | -                                                   | `00` Application ID: `SG.SGQR`         |
+|        | -                                                 | -                                                   | `01` Some ID, Length = 12              |
+|        | -                                                 | -                                                   | `02` Some value, Length = 7, `01.0001` |
+|        | -                                                 | -                                                   | `03` Some value, Length = 6            |
+|        | -                                                 | -                                                   | `04` Some value, Length = 2            |
+|        | -                                                 | -                                                   | `05` Some value, Length = 2            |
+|        | -                                                 | -                                                   | `06` Some value, Length = 4            |
+|        | -                                                 | -                                                   | `07` Expiry date: `YYYYMMDD`           |
+|  `52`  | -                                                 | -                                                   | `0000`                                 |
+|  `53`  | `764`                                             | `764`                                               | `702`                                  |
+|  `54`  | Required if `01` is `12`                          | **Required**                                        | Required if `01` is `12`               |
+|  `55`  | -                                                 | -                                                   | -                                      |
+|  `56`  | -                                                 | -                                                   | -                                      |
+|  `57`  | -                                                 | -                                                   | -                                      |
+|  `58`  | `TH`                                              | `TH`                                                | `SG`                                   |
+|  `59`  | -                                                 | *Optional*                                          | *Optional* ?                           |
+|  `60`  | -                                                 | -                                                   | `SINGAPORE`                            |
+|  `61`  | -                                                 | -                                                   | *Optional*                             |
+|  `62`  | -                                                 | -                                                   | -                                      |
+|  `63`  | **Required**                                      | **Required**                                        | **Required**                           |
