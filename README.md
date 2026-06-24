@@ -24,7 +24,7 @@ Currently, the following countries and local payment networks are supported:
 | `ref2`                       | string    | max 20 | O    | **Only valid if `merchantAccountInformation` is `BILL_PAYMENT`.** <br/><br/> An optional, non-reusable secondary transaction reference ID. <br/><br/> *Recommendation: Client-generated id from OtterNova’s integration partner.*                 |
 | `phoneNumber`                | string    | 12     | C    | **Required if `merchantAccountInformation` is `PROMPTPAY_ID`.** <br/><br/> The recipient’s phone number in E.164 format (e.g., `+66123456789` instead of `0123456789`).                                                                           |
 | `transactionAmount`          | string    | max 13 | C    | **Required if `pointOfInitiation` is `DYNAMIC` or `merchantAccountInformation` is `BILL_PAYMENT`.** <br/><br/> The payment amount in THB. Formatted with up to 2 decimal places using a dot (.) separator. <br/><br/> - Example: `99` or `89.50`. |
-| `merchantName`               | string    | max 25 | C    | **Only valid if `merchantAccountInformation` is `BILL_PAYMENT`.** <br/><br/> The registered name of the merchant.                                                                                                                                 |
+| `merchantName`               | string    | max 25 | O    | **Only valid if `merchantAccountInformation` is `BILL_PAYMENT`.** <br/><br/> An optional, registered name of the merchant.                                                                                                                        |
 
 #### Response Body
 PNG image of the generated QR code.
