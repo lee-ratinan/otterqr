@@ -60,7 +60,7 @@
                         </div>
 
                         <div class="mb-3" id="divRef2" style="display:none;">
-                            <label class="form-label">ref2 (Max 20 alphanumeric)</label>
+                            <label class="form-label">ref2 (Optional, Max 20 alphanumeric)</label>
                             <input type="text" class="form-control" name="ref2" maxlength="20">
                         </div>
 
@@ -134,7 +134,6 @@
 
             document.querySelector('[name="billerId"]').required = true;
             document.querySelector('[name="ref1"]').required = true;
-            document.querySelector('[name="ref2"]').required = true;
             document.querySelector('[name="phoneNumber"]').required = false;
         } else { // PROMPTPAY_ID
             document.getElementById('divBillerId').style.display = 'none';
@@ -144,7 +143,6 @@
             document.getElementById('divPhoneNumber').style.display = 'block';
             document.querySelector('[name="billerId"]').required = false;
             document.querySelector('[name="ref1"]').required = false;
-            document.querySelector('[name="ref2"]').required = false;
             document.querySelector('[name="phoneNumber"]').required = true;
         }
 
