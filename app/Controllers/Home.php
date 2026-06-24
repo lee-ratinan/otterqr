@@ -264,7 +264,7 @@ class Home extends BaseController
         } catch (Exception $e) {
             log_message('error', 'ERROR:' . $e->getMessage());
             return $this->response
-                ->setStatusCode(HTTP_STATUS_ERROR)
+                ->setStatusCode(HTTP_STATUS_ERROR, $e->getMessage())
                 ->setJSON(['error' => $e->getMessage()]);
         }
     }
@@ -329,7 +329,7 @@ class Home extends BaseController
         } catch (Exception $e) {
             log_message('error', 'ERROR:' . $e->getMessage());
             return $this->response
-                ->setStatusCode(HTTP_STATUS_ERROR)
+                ->setStatusCode(HTTP_STATUS_ERROR, $e->getMessage())
                 ->setJSON(['error' => $e->getMessage()]);
         }
     }

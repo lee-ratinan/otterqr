@@ -185,6 +185,16 @@
             });
 
             if (!response.ok) {
+                // If it's a 500 error, look for the {"error": "..."} JSON payload
+                if (response.status === 500) {
+                    try {
+                        const errorJson = await response.json();
+                        throw new Error(errorJson.error || "Internal Server Error");
+                    } catch (parseError) {
+                        // Fallback if the 500 response wasn't valid JSON after all
+                        throw new Error(`HTTP Error 500: ${response.statusText}`);
+                    }
+                }
                 throw new Error(`HTTP Error ${response.status}: ${response.statusText}`);
             }
 
@@ -196,7 +206,7 @@
             imgElement.style.display = 'block';
 
         } catch (error) {
-            errorElement.textContent = `Submission Failed: ${error.message}`;
+            errorElement.textContent = error.message;
             errorElement.style.display = 'block';
         }
     });
@@ -222,6 +232,16 @@
             });
 
             if (!response.ok) {
+                // If it's a 500 error, look for the {"error": "..."} JSON payload
+                if (response.status === 500) {
+                    try {
+                        const errorJson = await response.json();
+                        throw new Error(errorJson.error || "Internal Server Error");
+                    } catch (parseError) {
+                        // Fallback if the 500 response wasn't valid JSON after all
+                        throw new Error(`HTTP Error 500: ${response.statusText}`);
+                    }
+                }
                 throw new Error(`HTTP Error ${response.status}: ${response.statusText}`);
             }
 
@@ -230,7 +250,7 @@
 
         } catch (error) {
             jsonElement.textContent = "Failed to parse.";
-            errorElement.textContent = `Submission Failed: ${error.message}`;
+            errorElement.textContent = error.message;
             errorElement.style.display = 'block';
         }
     });
