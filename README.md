@@ -66,7 +66,7 @@ When there is an error in the request, the API will return a `500` HTTP Status a
 | `Invalid phone number`                                      | Phone number must match this REGEX `/^66\d{9}$/`                                               |
 | `Invalid transaction amount`                                | Transaction amount must match this REGEX `/^\d+(\.\d{2})?$/`                                   |
 | `Transaction amount too long`                               | Transaction amount must be 13-character long or less                                           |
-| `Invalid merchant name`                                     | Merchant name must match this REGEX `/^[A-Za-z0-9]{1,25}$/`                                    |
+| `Invalid merchant name`                                     | Merchant name must match this REGEX `/^[A-Za-z0-9 \-.]{1,25}$/`                                |
 | `Merchant name not supported for PromptPay ID`              | Merchant name is not supported when merchant account information is `PROMPTPAY_ID`             |
 
 #### Reader
