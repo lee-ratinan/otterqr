@@ -319,11 +319,14 @@ class Home extends BaseController
                         if (strlen($subValue) != $subLength) {
                             throw new Exception('Invalid QR Code');
                         }
+                        $subTagId = sprintf('%02d', $subTagId);
                         $subContents[$subTagId] = $subValue;
                         $subString = substr($subString, 4 + $subLength);
                     }
+                    $tagId = sprintf('%02d', $tagId);
                     $contents[$tagId] = $subContents;
                 } else {
+                    $tagId = sprintf('%02d', $tagId);
                     $contents[$tagId] = $value;
                 }
                 $qrString = substr($qrString, 4 + $length);
