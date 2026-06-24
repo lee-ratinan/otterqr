@@ -24,9 +24,7 @@ Currently, the following countries and local payment networks are supported:
 | `ref2`                       | string    | max 20 | O    | **Only valid if `merchantAccountInformation` is `BILL_PAYMENT`.** <br/><br/> An optional, non-reusable secondary transaction reference ID. <br/><br/> *Recommendation: Client-generated id from OtterNova’s integration partner.*                 |
 | `phoneNumber`                | string    | 12     | C    | **Required if `merchantAccountInformation` is `PROMPTPAY_ID`.** <br/><br/> The recipient’s phone number in E.164 format (e.g., `+66123456789` instead of `0123456789`).                                                                           |
 | `transactionAmount`          | string    | max 13 | C    | **Required if `pointOfInitiation` is `DYNAMIC` or `merchantAccountInformation` is `BILL_PAYMENT`.** <br/><br/> The payment amount in THB. Formatted with up to 2 decimal places using a dot (.) separator. <br/><br/> - Example: `99` or `89.50`. |
-| `merchantName`               | string    | max 25 | M    | The registered name of the merchant.                                                                                                                                                                                                              |
-| `merchantCity`               | string    | max 15 | M    | The city location of the merchant.                                                                                                                                                                                                                |
-| `postalCode`                 | number    | 5      | M    | The 5-digit postal code of the merchant location.                                                                                                                                                                                                 |
+| `merchantName`               | string    | max 25 | C    | **Only valid if `merchantAccountInformation` is `BILL_PAYMENT`.** <br/><br/> The registered name of the merchant.                                                                                                                                 |
 
 #### Response Body
 PNG image of the generated QR code.
@@ -69,8 +67,7 @@ When there is an error in the request, the API will return a `500` HTTP Status a
 | `Invalid transaction amount`                                | Transaction amount must match this REGEX `/^\d+(\.\d{2})?$/`                                   |
 | `Transaction amount too long`                               | Transaction amount must be 13-character long or less                                           |
 | `Invalid merchant name`                                     | Merchant name must match this REGEX `/^[A-Za-z0-9]{1,25}$/`                                    |
-| `Invalid merchant city`                                     | Merchant city must match this REGEX `/^[A-Za-z0-9]{1,15}$/`                                    |
-| `Invalid postal code`                                       | Postal code must match this REGEX `/^\d{5}$/`                                                  |
+| `Merchant name not supported for PromptPay ID`              | Merchant name is not supported when merchant account information is `PROMPTPAY_ID`             |
 
 #### Reader
 

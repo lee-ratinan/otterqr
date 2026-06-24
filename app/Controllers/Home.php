@@ -233,22 +233,14 @@ class Home extends BaseController
         $qrString .= $this->formatTag(self::TAG_COUNTRY_CODE, self::COUNTRY_CODE_TH);
         // MERCHANT NAME
         $merchantName = $this->request->getPost('merchantName');
-        if (!preg_match('/^[A-Za-z0-9]{1,25}$/', $merchantName)) {
-            throw new Exception('Invalid merchant name');
+        if (!empty($merchantName) && self::MAI_PROMPTPAY_ID == $merchantAccountInformation) {
+            throw new Exception('Merchant name not supported for PromptPay ID');
+        } else if (!empty($merchantName) && self::MAI_BILL_PAYMENT == $merchantAccountInformation) {
+            if (!preg_match('/^[A-Za-z0-9 \-.]{1,25}$/', $merchantName)) {
+                throw new Exception('Invalid merchant name');
+            }
+            $qrString .= $this->formatTag(self::TAG_MERCHANT_NAME, $merchantName);
         }
-        $qrString .= $this->formatTag(self::TAG_MERCHANT_NAME, $merchantName);
-        // MERCHANT CITY
-        $merchantCity = $this->request->getPost('merchantCity');
-        if (!preg_match('/^[A-Za-z0-9]{1,15}$/', $merchantCity)) {
-            throw new Exception('Invalid merchant city');
-        }
-        $qrString .= $this->formatTag(self::TAG_MERCHANT_CITY, $merchantCity);
-        // POSTAL CODE
-        $postalCode = $this->request->getPost('postalCode');
-        if (!preg_match('/^\d{5}$/', $postalCode)) {
-            throw new Exception('Invalid postal code');
-        }
-        $qrString .= $this->formatTag(self::TAG_MERCHANT_CITY, $postalCode);
         // CRC
         $qrString = $this->appendEmvcoCrc($qrString);
         log_message('info', 'GENERATOR:TH:' . $qrString);
