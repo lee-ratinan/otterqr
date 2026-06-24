@@ -60,5 +60,7 @@ if (file_exists($filePath)) {
 }
 ?>
 
+<p><a href="<?= base_url('testing') ?>">Click here to test the endpoints.</a></p>
+
 </body>
 </html>

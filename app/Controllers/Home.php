@@ -6,7 +6,6 @@ use CodeIgniter\HTTP\ResponseInterface;
 use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel;
-use Endroid\QrCode\Label\Label;
 use Endroid\QrCode\Logo\Logo;
 use Endroid\QrCode\RoundBlockSizeMode;
 use Exception;
@@ -17,30 +16,28 @@ class Home extends BaseController
 {
 
     // TAGS
-    const TAG_PFI = 0;
-    const TAG_POI = 1;
-    const TAG_PROMPTPAY_ID = 29;
-    const TAG_PROMPTPAY_BILL_PAYMENT = 30;
-    const SUBTAG_PROMPTPAY_AID = 0; // BOTH 29/30
+    const TAG_PFI                       = 0;
+    const TAG_POI                       = 1;
+    const TAG_PROMPTPAY_ID              = 29;
+    const TAG_PROMPTPAY_BILL_PAYMENT    = 30;
+    const SUBTAG_PROMPTPAY_AID          = 0; // BOTH 29/30
     const SUBTAG_PROMPTPAY_PHONE_NUMBER = 1; // ONLY 29
-    const SUBTAG_PROMPTPAY_BILLER_ID = 1; // ONLY 30
-    const SUBTAG_PROMPTPAY_REF_1 = 2; // ONLY 30
-    const SUBTAG_PROMPTPAY_REF_2 = 3; // ONLY 30
-    const TAG_CURRENCY_CODE = 53;
-    const TAG_TRANSACTION_AMOUNT = 54;
-    const TAG_COUNTRY_CODE = 58;
-    const TAG_MERCHANT_NAME = 59;
-    const TAG_MERCHANT_CITY = 60;
-    const TAG_POSTAL_CODE = 61;
-    const TAG_CRC = 63;
+    const SUBTAG_PROMPTPAY_BILLER_ID    = 1; // ONLY 30
+    const SUBTAG_PROMPTPAY_REF_1        = 2; // ONLY 30
+    const SUBTAG_PROMPTPAY_REF_2        = 3; // ONLY 30
+    const TAG_CURRENCY_CODE             = 53;
+    const TAG_TRANSACTION_AMOUNT        = 54;
+    const TAG_COUNTRY_CODE              = 58;
+    const TAG_MERCHANT_NAME             = 59;
+    const TAG_CRC                       = 63;
     // COUNTRY CODE
-    const COUNTRY_CODE_TH = 'TH';
+    const COUNTRY_CODE_TH  = 'TH';
     // PAYLOAD FORMAT INDICATOR
     const PFI_STANDARD_VAL = '01';
     // POINT OF INITIATION
-    const POI_STATIC = 'STATIC';
-    const POI_STATIC_VAL = '11';
-    const POI_DYNAMIC = 'DYNAMIC';
+    const POI_STATIC      = 'STATIC';
+    const POI_STATIC_VAL  = '11';
+    const POI_DYNAMIC     = 'DYNAMIC';
     const POI_DYNAMIC_VAL = '12';
     // MERCHANT ACCOUNT INFORMATION
     const MAI_PROMPTPAY_ID = 'PROMPTPAY_ID';
@@ -53,6 +50,10 @@ class Home extends BaseController
     // COLORS
     private array $promptpayColor = [0, 58, 109];
 
+    /**
+     * Homepage, show the README.md
+     * @return string
+     */
     public function index(): string
     {
         $data = [
@@ -172,7 +173,7 @@ class Home extends BaseController
             throw new Exception('Point of initiation not supported');
         }
         $pointOfInitValue = ($pointOfInit == self::POI_STATIC ? self::POI_STATIC_VAL : self::POI_DYNAMIC_VAL);
-        $qrString .= $this->formatTag(self::TAG_POI, $pointOfInitValue);
+        $qrString        .= $this->formatTag(self::TAG_POI, $pointOfInitValue);
         // MERCHANT ACCOUNT INFORMATION
         $merchantAccountInformation = $this->request->getPost('merchantAccountInformation');
         $merchantAccountInformation = strtoupper($merchantAccountInformation);
@@ -289,7 +290,7 @@ class Home extends BaseController
             }
             // DECODE QR STRING
             while (!empty($qrString)) {
-                $tagId = intval(substr($qrString, 0, 2));
+                $tagId  = intval(substr($qrString, 0, 2));
                 $length = intval(substr($qrString, 2, 2));
                 if ($length <= 0 || $length > 99 || $tagId < 0) {
                     throw new Exception('Invalid QR Code');
@@ -311,14 +312,14 @@ class Home extends BaseController
                         if (strlen($subValue) != $subLength) {
                             throw new Exception('Invalid QR Code');
                         }
-                        $subTagId = sprintf('%02d', $subTagId);
+                        $subTagId = str_pad($subTagId, 2, '0', STR_PAD_LEFT);
                         $subContents[$subTagId] = $subValue;
                         $subString = substr($subString, 4 + $subLength);
                     }
-                    $tagId = sprintf('%02d', $tagId);
+                    $tagId = str_pad($tagId, 2, '0', STR_PAD_LEFT);
                     $contents[$tagId] = $subContents;
                 } else {
-                    $tagId = sprintf('%02d', $tagId);
+                    $tagId = str_pad($tagId, 2, '0', STR_PAD_LEFT);
                     $contents[$tagId] = $value;
                 }
                 $qrString = substr($qrString, 4 + $length);
@@ -331,5 +332,15 @@ class Home extends BaseController
                 ->setStatusCode(HTTP_STATUS_ERROR)
                 ->setJSON(['error' => $e->getMessage()]);
         }
+    }
+
+    /**
+     * Testing page
+     * @return string
+     */
+    public function testing(): string
+    {
+        $data = [];
+        return view('testing', $data);
     }
 }
