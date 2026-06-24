@@ -1,14 +1,14 @@
 # OtterQR API Reference
 
-## Supported Countries
+## 1. Supported Countries
 
 Currently, the following countries and local payment networks are supported:
 
 - Thailand (PromptPay)
 
-## Endpoints: Generate QR Code
+## 2. Endpoints
 
-### Thailand PromptPay
+### 2.1 Generation of Thailand PromptPay QR Codes
 
 #### Endpoint
 `POST /generator`
@@ -27,39 +27,16 @@ Currently, the following countries and local payment networks are supported:
 | `merchantName`               | string    | max 25 | O    | **Only valid if `merchantAccountInformation` is `BILL_PAYMENT`.** <br/><br/> An optional, registered name of the merchant.                                                                                                                        |
 
 #### Response Body
-PNG image of the generated QR code.
 
-### Reader Endpoint
-#### The Endpoint
-`POST /reader`
+On success: a PNG image of the generated QR code with a 200 HTTP status code.
 
-#### Request Body
-| Key        | Data Type | Length | Req. | Description                       |
-|------------|-----------|--------|------|-----------------------------------|
-| `qrString` | string    | -      | M    | The QR code string to be decoded. |
+On error: a JSON object with the error message.
 
-#### Response Body
-JSON object containing the decoded data. The structure is dynamic based on the QR code raw information.
-
-### Error Response
-
-When there is an error in the request, the API will return a `500` HTTP Status along with a JSON object.
-
-#### Error Response Object
 | Key     | Data Type | Description                     |
 |---------|-----------|---------------------------------|
 | `error` | string    | A human-readable error message. |
 
-#### Notes on the Test Cases
-
-When testing the QR code generation using the real banking applications, here are some observations:
-
-- Although some QR codes contain `merchantName` field (tag ID 59), it is not required at all. Instead, the field can be anything or completely omitted. The banking applications will call the lookup API to get the registered merchant names from the database.
-- The field `ref2` (for `BILL_PAYMENT`) is stated in all documents that they are not required, but for some reason, some banking applications still require it.
-
-### List of Error Messages
-
-#### Generator
+#### Error Messages
 
 | Error Message                                               | Description                                                                                    |
 |-------------------------------------------------------------|------------------------------------------------------------------------------------------------|
@@ -76,14 +53,42 @@ When testing the QR code generation using the real banking applications, here ar
 | `Invalid merchant name`                                     | Merchant name must match this REGEX `/^[A-Za-z0-9 \-.]{1,25}$/`                                |
 | `Merchant name not supported for PromptPay ID`              | Merchant name is not supported when merchant account information is `PROMPTPAY_ID`             |
 
-#### Reader
+#### Notes on the Test Cases
+
+When testing the QR code generation using the real banking applications, here are some observations:
+
+- Although some QR codes contain `merchantName` field (tag ID 59), it is not required at all. Instead, the field can be anything or completely omitted. The banking applications will call the lookup API to get the registered merchant names from the database.
+- The field `ref2` (for `BILL_PAYMENT`) is stated in all documents that they are not required, but for some reason, some banking applications still require it.
+
+### 2.2 Reader Endpoint
+
+#### The Endpoint
+`POST /reader`
+
+#### Request Body
+
+| Key        | Data Type | Length | Req. | Description                       |
+|------------|-----------|--------|------|-----------------------------------|
+| `qrString` | string    | -      | M    | The QR code string to be decoded. |
+
+#### Response Body
+
+On success: a JSON object containing the decoded data. The structure is dynamic based on the QR code raw information.
+
+On error: a JSON object with the error message.
+
+| Key     | Data Type | Description                     |
+|---------|-----------|---------------------------------|
+| `error` | string    | A human-readable error message. |
+
+#### Error Messages
 
 | Error Message     | Description                                     |
 |-------------------|-------------------------------------------------|
 | `Invalid CRC`     | CRC code is invalid.                            |
 | `Invalid QR Code` | The QR code is invalid due to tag ID or length. |
 
-## Requirement Legend
+## 3. Requirement Legend
 - M: Mandatory
 - C: Conditional (Required depending on other fields)
 - O: Optional
