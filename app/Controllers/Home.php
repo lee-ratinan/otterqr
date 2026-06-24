@@ -340,7 +340,11 @@ class Home extends BaseController
      */
     public function testing(): string
     {
-        $data = [];
-        return view('testing', $data);
+        return view('testing');
+    }
+
+    public function doc(): string
+    {
+        return view('doc');
     }
 }

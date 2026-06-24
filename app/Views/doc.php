@@ -1,11 +1,6 @@
 <?php
-/**
- * @var string $readmePath The absolute path to the README.md file
- */
-
-// 1. Define the path to README.md (Fallback to root if not passed from Controller)
-$filePath = $readmePath ?? ROOTPATH . 'README.md';
-
+// 1. Define the path to doc.md
+$filePath = dirname(__FILE__) . '/doc.md';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,13 +44,11 @@ $filePath = $readmePath ?? ROOTPATH . 'README.md';
                     // 4. Output the rendered HTML
                     echo $parsedown->text($markdownContent);
                 } else {
-                    echo "<p>Error: README.md file not found at " . esc($filePath) . "</p>";
+                    echo "<p>Error: doc.md file not found at " . esc($filePath) . "</p>";
                 }
                 ?>
-                <p class="mt-5">
-                    <a href="<?= base_url('testing') ?>">Click here to test the endpoints</a> |
-                    <a href="<?= base_url('doc') ?>">Read QR code specification</a>
-                </p>
+
+                <p class="mt-5"><a href="<?= base_url() ?>">Back to API Reference</a></p>
             </article>
         </div>
     </div>
