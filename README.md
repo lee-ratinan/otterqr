@@ -50,6 +50,13 @@ When there is an error in the request, the API will return a `500` HTTP Status a
 |---------|-----------|---------------------------------|
 | `error` | string    | A human-readable error message. |
 
+#### Notes on the Test Cases
+
+When testing the QR code generation using the real banking applications, here are some observations:
+
+- Although some QR codes contain `merchantName` field (tag ID 59), it is not required at all. Instead, the field can be anything or completely omitted. The banking applications will call the lookup API to get the registered merchant names from the database.
+- The field `ref2` (for `BILL_PAYMENT`) is stated in all documents that they are not required, but for some reason, some banking applications still require it.
+
 ### List of Error Messages
 
 #### Generator
