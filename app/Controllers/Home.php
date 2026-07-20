@@ -256,13 +256,14 @@ class Home extends BaseController
     {
         $countryCode = $this->request->getPost('countryCode');
         $countryCode = strtoupper($countryCode);
+        log_message('debug', 'GENERATOR:' . $countryCode);
         try {
             if (self::COUNTRY_CODE_TH == $countryCode) {
                 return $this->generatePromptPayQr();
             }
             throw new Exception('Country code not supported');
         } catch (Exception $e) {
-            log_message('error', 'ERROR:' . $e->getMessage());
+            log_message('error', 'ERROR: ' . $e->getMessage());
             return $this->response
                 ->setStatusCode(HTTP_STATUS_ERROR, $e->getMessage())
                 ->setJSON(['error' => $e->getMessage()]);
