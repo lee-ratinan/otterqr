@@ -167,7 +167,7 @@ class Home extends BaseController
         // PAYLOAD FORMAT INDICATOR
         $qrString = $this->formatTag(self::TAG_PFI, self::PFI_STANDARD_VAL);
         // POINT OF INITIATION
-        $pointOfInit = $this->request->getPost('pointOfInitiation');
+        $pointOfInit = $this->request->getGetPost('pointOfInitiation');
         $pointOfInit = strtoupper($pointOfInit);
         if (!in_array($pointOfInit, [self::POI_STATIC, self::POI_DYNAMIC])) {
             throw new Exception('Point of initiation not supported');
@@ -175,14 +175,14 @@ class Home extends BaseController
         $pointOfInitValue = ($pointOfInit == self::POI_STATIC ? self::POI_STATIC_VAL : self::POI_DYNAMIC_VAL);
         $qrString        .= $this->formatTag(self::TAG_POI, $pointOfInitValue);
         // MERCHANT ACCOUNT INFORMATION
-        $merchantAccountInformation = $this->request->getPost('merchantAccountInformation');
+        $merchantAccountInformation = $this->request->getGetPost('merchantAccountInformation');
         $merchantAccountInformation = strtoupper($merchantAccountInformation);
         if (!in_array($merchantAccountInformation, [self::MAI_PROMPTPAY_ID, self::MAI_BILL_PAYMENT])) {
             throw new Exception('Merchant account information not supported');
         }
         if ($merchantAccountInformation == self::MAI_PROMPTPAY_ID) {
             // PROMPTPAY ID
-            $phoneNumber = $this->request->getPost('phoneNumber');
+            $phoneNumber = $this->request->getGetPost('phoneNumber');
             $phoneNumber = str_replace(['+', ' ', '-'], '', $phoneNumber);
             if (!preg_match('/^66\d{9}$/', $phoneNumber)) {
                 throw new Exception('Invalid phone number');
@@ -196,7 +196,7 @@ class Home extends BaseController
             if (self::POI_STATIC == $pointOfInit) {
                 throw new Exception('Bill payment not supported for static point of initiation');
             }
-            $billerId = $this->request->getPost('billerId');
+            $billerId = $this->request->getGetPost('billerId');
             if (!preg_match('/^\d{15}$/', $billerId)) {
                 // Biller ID = Tax ID + suffix, which is 15 digits
                 throw new Exception('Invalid biller ID');
@@ -204,12 +204,12 @@ class Home extends BaseController
             $subtagStr  = $this->formatTag(self::SUBTAG_PROMPTPAY_AID, self::AID_MERCHANT_BILL_DOMESTIC);
             $subtagStr .= $this->formatTag(self::SUBTAG_PROMPTPAY_BILLER_ID, $billerId);
             // REF1
-            $ref1  = $this->request->getPost('ref1');
+            $ref1  = $this->request->getGetPost('ref1');
             if (!preg_match('/[A-Za-z0-9]{1,20}/', $ref1)) {
                 throw new Exception('Invalid reference 1');
             }
             $subtagStr .= $this->formatTag(self::SUBTAG_PROMPTPAY_REF_1, $ref1);
-            $ref2  = $this->request->getPost('ref2');
+            $ref2  = $this->request->getGetPost('ref2');
             if (!empty($ref2)) {
                 if (!preg_match('/[A-Za-z0-9]{1,20}/', $ref2)) {
                     throw new Exception('Invalid reference 2');
@@ -222,7 +222,7 @@ class Home extends BaseController
         $qrString .= $this->formatTag(self::TAG_CURRENCY_CODE, self::CURRENCY_CODE_THB);
         // TRANSACTION AMOUNT
         if (self::POI_DYNAMIC == $pointOfInit) {
-            $amount = $this->request->getPost('transactionAmount');
+            $amount = $this->request->getGetPost('transactionAmount');
             if (!preg_match('/^\d+(\.\d{2})?$/', $amount)) {
                 throw new Exception('Invalid transaction amount');
             } else if (13 < strlen($amount)) {
@@ -233,7 +233,7 @@ class Home extends BaseController
         // COUNTRY CODE
         $qrString .= $this->formatTag(self::TAG_COUNTRY_CODE, self::COUNTRY_CODE_TH);
         // MERCHANT NAME
-        $merchantName = $this->request->getPost('merchantName');
+        $merchantName = $this->request->getGetPost('merchantName');
         if (!empty($merchantName) && self::MAI_PROMPTPAY_ID == $merchantAccountInformation) {
             throw new Exception('Merchant name not supported for PromptPay ID');
         } else if (!empty($merchantName) && self::MAI_BILL_PAYMENT == $merchantAccountInformation) {
@@ -254,7 +254,7 @@ class Home extends BaseController
      */
     public function generator(): ResponseInterface
     {
-        $countryCode = $this->request->getPost('countryCode');
+        $countryCode = $this->request->getGetPost('countryCode');
         $countryCode = strtoupper($countryCode);
         log_message('debug', 'GENERATOR:' . $countryCode);
         try {
@@ -278,7 +278,7 @@ class Home extends BaseController
      */
     public function reader(): ResponseInterface
     {
-        $qrString = $this->request->getPost('qrString');
+        $qrString = $this->request->getGetPost('qrString');
         log_message('error', 'READER:' . $qrString);
         $contents = [];
         try {
